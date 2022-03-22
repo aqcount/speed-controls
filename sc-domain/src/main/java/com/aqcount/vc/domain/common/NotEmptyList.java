@@ -63,12 +63,6 @@ public class NotEmptyList<E> extends AbstractList<E> {
     }
 
     @Override
-    public boolean isEmpty() {
-        // it's guaranteed
-        return false;
-    }
-
-    @Override
     public E remove(int index) {
         if (size() == 1) {
             throw new IllegalStateException("cannot remove last element");

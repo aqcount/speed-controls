@@ -74,10 +74,11 @@ public class NotEmptyListTest {
         List<String> sut = new NotEmptyList<>(List.of("HELLO", "THERE"));
 
         // when
-        sut.remove(0);
+        String removed = sut.remove(0);
 
         // then
         assertThat(sut.size()).isEqualTo(1);
+        assertThat(removed).isEqualTo("HELLO");
     }
 
     @Test

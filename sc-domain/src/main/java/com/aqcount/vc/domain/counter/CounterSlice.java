@@ -1,4 +1,4 @@
-package com.aqcount.vc.domain.control;
+package com.aqcount.vc.domain.counter;
 
 /*-
  * #%L
@@ -12,10 +12,10 @@ package com.aqcount.vc.domain.control;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,50 +27,25 @@ package com.aqcount.vc.domain.control;
  */
 
 import com.aqcount.vc.domain.common.PositiveNumber;
-import lombok.Value;
 
-import java.util.OptionalInt;
+public class CounterSlice {
+    private int remaining;
 
-/**
- * Defines how many times a {@link SpeedControl}'s counter can be utilized.
- */
-public interface UsageLimit {
-    UsageLimit NONE = new None();
-
-    OptionalInt get();
-
-    /**
-     * There's no limit to the number of times a SpeedControl's counter can be utilized.
-     */
-    class None implements UsageLimit {
-        private None() {
-        
-        }
-
-        @Override
-        public OptionalInt get() {
-            return OptionalInt.empty();
-        }
+    public CounterSlice(int remaining) {
+        this(PositiveNumber.of(remaining));
     }
 
-    /**
-     * A SpeedControl's counter can only be utilized a certain number of times.
-     */
-    @Value(staticConstructor = "of")
-    class Measured implements UsageLimit {
-        PositiveNumber<java.lang.Integer> limit;
+    public CounterSlice(PositiveNumber<Integer> initiallyRemaining) {
+        this.remaining = initiallyRemaining.intValue();
+    }
 
-        public static UsageLimit of(int i) {
-            return new Measured(PositiveNumber.of(i));
+    public boolean tryReserve(int reservationSize) {
+        if (remaining < reservationSize) {
+            return false;
         }
 
-        public Measured(PositiveNumber<Integer> limit) {
-            this.limit = limit;
-        }
+        remaining -= reservationSize;
 
-        @Override
-        public OptionalInt get() {
-            return OptionalInt.of(limit.intValue());
-        }
+        return true;
     }
 }

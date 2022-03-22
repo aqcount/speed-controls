@@ -45,13 +45,13 @@ public class SpeedControl {
     @NonNull
     private Name name;
     @NonNull
-    private PositiveNumber<BigDecimal> amount;
-    @NonNull
     private UsageLimit usageLimit;
     @NonNull
     private Window window;
     @NonNull
     private Currency currency;
+    @NonNull
+    private PositiveNumber<BigDecimal> amount;
     @NonNull
     private NotEmptyList<AuthorizationType> authorizationTypes;
     @NonNull

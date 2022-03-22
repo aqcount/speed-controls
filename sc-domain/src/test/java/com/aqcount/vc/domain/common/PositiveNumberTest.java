@@ -72,7 +72,7 @@ public class PositiveNumberTest {
 
     @Nested
     @DisplayName("For Integer")
-    class ForInteger {
+    class ForMeasured {
         @Test
         public void shouldRejectZeroValue() {
             // when

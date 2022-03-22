@@ -1,4 +1,4 @@
-package com.aqcount.vc.domain.control;
+package com.aqcount.vc.domain.counter;
 
 /*-
  * #%L
@@ -26,26 +26,57 @@ package com.aqcount.vc.domain.control;
  * #L%
  */
 
-import com.aqcount.vc.domain.control.UsageLimit.Measured;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-public class UsageLimitTest {
+public class CounterSliceTest {
     @Test
-    public void shouldReturnEmpty() {
-        assertThat(UsageLimit.NONE.get()).isEmpty();
+    public void shouldReserveWhenRemaining() {
+        // given
+        CounterSlice sut = new CounterSlice(10);
+
+        // when
+        boolean reserved = sut.tryReserve(5);
+
+        // then
+        assertThat(reserved).isTrue();
     }
 
     @Test
-    public void shouldReturnValue() {
+    public void shouldNotReserveMoreThanInitiallyRemaining() {
         // given
-        int controlValue = 114;
+        CounterSlice sut = new CounterSlice(10);
 
         // when
-        UsageLimit sut = UsageLimit.Measured.of(controlValue);
+        boolean reserved = sut.tryReserve(15);
 
         // then
-        assertThat(sut.get()).hasValue(controlValue);
+        assertThat(reserved).isFalse();
+    }
+
+    @Test
+    public void shouldReserveAllInitiallyRemaining() {
+        // given
+        CounterSlice sut = new CounterSlice(10);
+
+        // when
+        boolean reserved = sut.tryReserve(10);
+
+        // then
+        assertThat(reserved).isTrue();
+    }
+
+    @Test
+    public void shouldNotIncrementallyReserveMoreThanRemaining() {
+        // given
+        CounterSlice sut = new CounterSlice(10);
+        sut.tryReserve(10);
+
+        // when
+        boolean reserved = sut.tryReserve(5);
+
+        // then
+        assertThat(reserved).isFalse();
     }
 }
